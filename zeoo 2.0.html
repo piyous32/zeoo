@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <title>Zeoo - Personal Messaging System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #000;
+            overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #000;
+        }
+
+        body.light-mode {
+            background: #f5f5f5;
+        }
+
+        .mobile-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            transition: background 0.3s ease;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode .mobile-container,
+        body.dark-mode .post,
+        body.dark-mode .stories-wrapper,
+        body.dark-mode .online-users,
+        body.dark-mode .search-bar,
+        body.dark-mode .mobile-header,
+        body.dark-mode .profile-page,
+        body.dark-mode .settings-page,
+        body.dark-mode .comment-section,
+        body.dark-mode .modal-content,
+        body.dark-mode .message-item,
+        body.dark-mode .login-card,
+        body.dark-mode .chat-modal,
+        body.dark-mode .chat-header {
+            background: #1e1e1e;
+        }
+
+        body.dark-mode .post-username,
+        body.dark-mode .post-location,
+        body.dark-mode .post-caption,
+        body.dark-mode .post-likes,
+        body.dark-mode .post-time,
+        body.dark-mode .story-name,
+        body.dark-mode .online-name,
+        body.dark-mode .setting-label,
+        body.dark-mode .settings-title,
+        body.dark-mode .profile-name,
+        body.dark-mode .profile-bio-text,
+        body.dark-mode .message-text,
+        body.dark-mode .message-sender,
+        body.dark-mode .tagline,
+        body.dark-mode .chat-username,
+        body.dark-mode .message-bubble.received {
+            color: #ffffff;
+        }
+
+        body.dark-mode .input-field,
+        body.dark-mode .search-input,
+        body.dark-mode .chat-input {
+            background: #2c2c2c;
+            border-color: #404040;
+            color: white;
+        }
+
+        body.dark-mode .message-bubble.sent {
+            background: #0095f6;
+            color: white;
+        }
+
+        body.dark-mode .message-bubble.received {
+            background: #2c2c2c;
+        }
+
+        /* Intro Screen */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeOut 2s ease forwards;
+            animation-delay: 2s;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; visibility: visible; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        .intro-content {
+            text-align: center;
+            animation: bounceIn 1s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .intro-logo {
+            font-size: 120px;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .intro-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+
+        .intro-subtext {
+            color: rgba(255,255,255,0.8);
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 25px;
+            width: 100%;
+            max-width: 350px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .zeoo-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 80px;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .logo-text {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 5px;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fafafa;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .otp-button {
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #dbdbdb;
+        }
+
+        .divider-text {
+            padding: 0 15px;
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+
+        .otp-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .otp-input {
+            flex: 1;
+            text-align: center;
+            font-size: 20px;
+            letter-spacing: 5px;
+        }
+
+        .resend-text {
+            text-align: center;
+            font-size: 12px;
+            color: #8e8e8e;
+            margin-top: 10px;
+        }
+
+        .resend-link {
+            color: #0095f6;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Main App */
+        .main-app {
+            display: none;
+            background: #fafafa;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        .main-app.active {
+            display: block;
+        }
+
+        .mobile-header {
+            background: white;
+            padding: 10px 16px;
+            border-bottom: 1px solid #dbdbdb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 22px;
+        }
+
+        .header-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            background: white;
+            padding: 12px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #dbdbdb;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #fafafa;
+        }
+
+        .search-btn {
+            background: #0095f6;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Online Users */
+        .online-users {
+            background: white;
+            padding: 12px;
+            border-bottom: 1px solid #dbdbdb;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .online-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #262626;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .online-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+        }
+
+        .online-user {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .online-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            position: relative;
+        }
+
+        .online-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
+            background: #4caf50;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .online-name {
+            font-size: 12px;
+            color: #262626;
+        }
+
+        .new-badge {
+            background: #ff4757;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+
+        /* Stories */
+        .stories-wrapper {
+            background: white;
+            border-bottom: 1px solid #dbdbdb;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 16px 12px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .story {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .story-ring {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-inner {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-avatar {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .story-name {
+            font-size: 12px;
+            color: #262626;
+        }
+
+        /* Post Card */
+        .post {
+            background: white;
+            margin-bottom: 12px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            gap: 12px;
+        }
+
+        .post-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .post-user {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .post-location {
+            font-size: 11px;
+            color: #8e8e8e;
+        }
+
+        .post-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            padding: 8px 12px;
+            display: flex;
+            gap: 18px;
+        }
+
+        .action-icon {
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .liked {
+            color: #ed4956;
+        }
+
+        .post-likes {
+            padding: 0 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .post-caption {
+            padding: 0 12px;
+            font-size: 14px;
+            margin: 6px 0;
+        }
+
+        .post-comments {
+            padding: 0 12px;
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+
+        .post-time {
+            padding: 0 12px 12px;
+            font-size: 10px;
+            color: #8e8e8e;
+        }
+
+        .comment-section {
+            padding: 12px;
+            border-top: 1px solid #efefef;
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            padding: 8px 0;
+            background: transparent;
+        }
+
+        .comment-post {
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-top: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 12px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            font-size: 26px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .nav-item.active {
+            color: #0095f6;
+        }
+
+        /* Profile Page */
+        .profile-page {
+            display: none;
+            background: white;
+        }
+
+        .profile-page.active {
+            display: block;
+        }
+
+        .profile-header {
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .profile-avatar-large {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .profile-stats {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .profile-bio {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+
+        .profile-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .profile-bio-text {
+            font-size: 14px;
+            color: #262626;
+        }
+
+        .profile-buttons {
+            padding: 12px 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .profile-btn {
+            flex: 1;
+            padding: 8px;
+            background: #efefef;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .follow-btn {
+            background: #0095f6;
+            color: white;
+        }
+
+        .profile-posts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .profile-post {
+            aspect-ratio: 1;
+            object-fit: cover;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        /* Explore Page */
+        .explore-page {
+            display: none;
+            padding: 2px;
+        }
+
+        .explore-page.active {
+            display: block;
+        }
+
+        .explore-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .explore-item {
+            aspect-ratio: 1;
+            object-fit: cover;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        /* Messages Page */
+        .messages-page {
+            display: none;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .messages-page.active {
+            display: block;
+        }
+
+        .message-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid #efefef;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .message-item:hover {
+            background: #fafafa;
+        }
+
+        .message-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            position: relative;
+        }
+
+        .unread-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .message-info {
+            flex: 1;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .message-text {
+            font-size: 12px;
+            color: #8e8e8e;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #8e8e8e;
+        }
+
+        /* Chat Modal */
+        .chat-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 300;
+            flex-direction: column;
+        }
+
+        .chat-modal.active {
+            display: flex;
+        }
+
+        .chat-header {
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .chat-back {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .chat-username {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .chat-status {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-message {
+            display: flex;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.sent {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        .chat-message.sent .message-bubble {
+            background: #0095f6;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.received .message-bubble {
+            background: #efefef;
+            color: #262626;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time-small {
+            font-size: 10px;
+            color: #8e8e8e;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .chat-input-area {
+            padding: 12px;
+            border-top: 1px solid #dbdbdb;
+            display: flex;
+            gap: 10px;
+            background: inherit;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #dbdbdb;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #0095f6;
+        }
+
+        .chat-send {
+            background: #0095f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .chat-send:active {
+            transform: scale(0.95);
+        }
+
+        /* Settings Page */
+        .settings-page {
+            display: none;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .settings-page.active {
+            display: block;
+        }
+
+        .settings-section {
+            padding: 20px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #efefef;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #0095f6;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Analytics */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .analytics-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .analytics-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .chart-bar {
+            height: 30px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 8px;
+            margin: 8px 0;
+            transition: width 0.5s ease;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8e8e8e;
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 200;
+            align-items: flex-end;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid #dbdbdb;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .create-post-area {
+            padding: 20px;
+        }
+
+        .create-post-area input, .create-post-area textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+        }
+
+        .search-results {
+            background: white;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            border-bottom: 1px solid #dbdbdb;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 300;
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Intro Screen -->
+        <div id="introScreen" class="intro-screen">
+            <div class="intro-content">
+                <div class="intro-logo">✨</div>
+                <div class="intro-text">ZEOO</div>
+                <div class="intro-subtext">Share your moments</div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="loginPage" class="login-container" style="display: none;">
+            <div class="login-card">
+                <div class="zeoo-logo">
+                    <div class="logo-icon">✨</div>
+                    <div class="logo-text">ZEOO</div>
+                </div>
+                <div class="tagline">Connect with friends</div>
+                
+                <div id="loginForm">
+                    <input type="email" id="loginEmail" class="input-field" placeholder="Email address">
+                    <button class="login-button otp-button" onclick="sendOTP()">Send OTP</button>
+                    
+                    <div id="otpSection" style="display: none;">
+                        <input type="text" id="otpCode" class="input-field otp-input" placeholder="Enter 6-digit OTP" maxlength="6">
+                        <button class="login-button" onclick="verifyOTP()">Verify & Login</button>
+                        <div class="resend-text">Didn't receive OTP? <span class="resend-link" onclick="sendOTP()">Resend</span></div>
+                    </div>
+                    
+                    <div class="divider">
+                        <div class="divider-line"></div>
+                        <div class="divider-text">OR</div>
+                        <div class="divider-line"></div>
+                    </div>
+                    
+                    <button class="login-button" onclick="createNewAccount()" style="background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);">
+                        ✨ Create New Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp" class="main-app">
+            <div class="mobile-header">
+                <div class="header-logo">ZEOO</div>
+                <div class="header-icons">
+                    <span class="header-icon" onclick="showCreateModal()">➕</span>
+                    <span class="header-icon" onclick="switchTab('messages')">💬</span>
+                    <span class="header-icon" onclick="switchTab('analytics')">📊</span>
+                    <span class="header-icon" onclick="switchTab('settings')">⚙️</span>
+                    <span class="header-icon" onclick="logout()">🚪</span>
+                </div>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search users..." onkeyup="searchUsers()">
+                <button class="search-btn" onclick="searchUsers()">Search</button>
+            </div>
+            
+            <div id="searchResults" class="search-results"></div>
+            
+            <div class="online-users">
+                <div class="online-title">
+                    <span class="online-dot"></span>
+                    Online Now
+                </div>
+                <div class="online-list" id="onlineUsersList"></div>
+            </div>
+            
+            <div id="feedPage">
+                <div class="stories-wrapper" id="storiesContainer"></div>
+                <div id="postsContainer"></div>
+            </div>
+            
+            <div id="explorePage" class="explore-page">
+                <div class="explore-grid" id="exploreGrid"></div>
+            </div>
+            
+            <div id="profilePage" class="profile-page">
+                <div class="profile-header">
+                    <div class="profile-avatar-large" id="profileAvatar">✨</div>
+                    <div class="profile-stats">
+                        <div><div class="stat-number" id="profilePosts">0</div><div class="stat-label">posts</div></div>
+                        <div><div class="stat-number" id="profileFollowers">0</div><div class="stat-label">followers</div></div>
+                        <div><div class="stat-number" id="profileFollowing">0</div><div class="stat-label">following</div></div>
+                    </div>
+                </div>
+                <div class="profile-bio">
+                    <div class="profile-name" id="profileName">New User</div>
+                    <div class="profile-bio-text" id="profileBio">Welcome to Zeoo! Share your first moment ✨</div>
+                </div>
+                <div class="profile-buttons">
+                    <button class="profile-btn" onclick="editProfile()">Edit Profile</button>
+                </div>
+                <div id="profilePostsGrid" class="profile-posts"></div>
+            </div>
+            
+            <!-- Messages Page with Personal Data -->
+            <div id="messagesPage" class="messages-page">
+                <div class="settings-section">
+                    <div class="settings-title">💬 Personal Messages</div>
+                    <div style="font-size: 12px; color: #8e8e8e; margin-top: 5px;">Your private conversations</div>
+                </div>
+                <div id="messagesList"></div>
+            </div>
+            
+            <!-- Analytics Page -->
+            <div id="analyticsPage" class="settings-page">
+                <div class="settings-section">
+                    <div class="settings-title">📊 My Analytics</div>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="analyticsTotalPosts">0</div>
+                            <div class="analytics-label">Total Posts</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="analyticsTotalLikes">0</div>
+                            <div class="analytics-label">Total Likes</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="analyticsAvgLikes">0</div>
+                            <div class="analytics-label">Avg Likes/Post</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="analyticsEngagement">0%</div>
+                            <div class="analytics-label">Engagement Rate</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">📈 Post Performance</div>
+                    <div id="postPerformanceChart"></div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">🏆 Top Posts</div>
+                    <div id="topPostsList"></div>
+                </div>
+            </div>
+            
+            <div id="settingsPage" class="settings-page">
+                <div class="settings-section">
+                    <div class="settings-title">Account</div>
+                    <div class="setting-item">
+                        <span class="setting-label">Username</span>
+                        <span class="setting-value" id="settingsUsername">user</span>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">Email</span>
+                        <span class="setting-value" id="settingsEmail">user@zeoo.com</span>
+                    </div>
+                    <div class="setting-item" onclick="clearAllMessages()">
+                        <span class="setting-label">Clear All Messages</span>
+                        <span class="setting-value">🗑️</span>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">Appearance</div>
+                    <div class="setting-item">
+                        <span class="setting-label">Dark Mode</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">Data</div>
+                    <div class="setting-item" onclick="backupData()">
+                        <span class="setting-label">Backup Data</span>
+                        <span class="setting-value">💾</span>
+                    </div>
+                    <div class="setting-item" onclick="exportMessages()">
+                        <span class="setting-label">Export Messages</span>
+                        <span class="setting-value">📤</span>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">About</div>
+                    <div class="setting-item">
+                        <span class="setting-label">Version</span>
+                        <span class="setting-value">Zeoo 2.0.0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="switchTab('feed')">🏠</div>
+                <div class="nav-item" onclick="switchTab('explore')">🔍</div>
+                <div class="nav-item" onclick="switchTab('profile')">👤</div>
+                <div class="nav-item" onclick="switchTab('messages')">💬</div>
+                <div class="nav-item" onclick="switchTab('analytics')">📊</div>
+                <div class="nav-item" onclick="switchTab('settings')">⚙️</div>
+            </div>
+        </div>
+
+        <!-- Create Post Modal -->
+        <div id="createModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Create new post</h3>
+                    <span class="close-modal" onclick="closeCreateModal()">✕</span>
+                </div>
+                <div class="create-post-area">
+                    <input type="file" id="postImage" accept="image/*">
+                    <textarea id="postCaption" rows="3" placeholder="Write a caption..."></textarea>
+                    <input type="text" id="postLocation" placeholder="Add location">
+                    <button class="login-button" onclick="createPost()">Share</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Modal -->
+        <div id="chatModal" class="chat-modal">
+            <div class="chat-header">
+                <span class="chat-back" onclick="closeChat()">←</span>
+                <div class="chat-avatar" id="chatAvatar">U</div>
+                <div style="flex: 1;">
+                    <div class="chat-username" id="chatUsername">User</div>
+                    <div class="chat-status" id="chatStatus">online</div>
+                </div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="chat-send" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script>
+        // ============ DATABASE STRUCTURE ============
+        // Each user has their own personal message database
+        let usersDB = {};
+        let allPosts = [];
+        let currentUser = null;
+        let currentTab = 'feed';
+        let currentChatUser = null;
+        let pendingOTP = null;
+        let pendingEmail = null;
+        
+        // Personal Messages Database - Each user has their own messages
+        let personalMessages = {}; // Structure: { "username": { "chat_user": [messages] } }
+        
+        // User settings
+        let userSettings = { darkMode: false };
+        
+        // ============ MESSAGE DATABASE FUNCTIONS ============
+        
+        // Initialize personal messages for current user
+        function initPersonalMessages() {
+            if(!currentUser) return;
+            const saved = localStorage.getItem(`zeoo_messages_${currentUser.username}`);
+            if(saved) {
+                personalMessages = JSON.parse(saved);
+            } else {
+                personalMessages = {};
+            }
+        }
+        
+        // Save personal messages for current user
+        function savePersonalMessages() {
+            if(!currentUser) return;
+            localStorage.setItem(`zeoo_messages_${currentUser.username}`, JSON.stringify(personalMessages));
+        }
+        
+        // Get messages between current user and another user
+        function getMessagesWithUser(otherUsername) {
+            if(!personalMessages[otherUsername]) {
+                personalMessages[otherUsername] = [];
+            }
+            return personalMessages[otherUsername];
+        }
+        
+        // Add a new message
+        function addMessage(toUsername, messageText, isSent = true) {
+            if(!currentUser) return;
+            
+            const message = {
+                id: Date.now(),
+                from: isSent ? currentUser.username : toUsername,
+                to: isSent ? toUsername : currentUser.username,
+                text: messageText,
+                timestamp: Date.now(),
+                read: false
+            };
+            
+            // Add to current user's messages
+            if(!personalMessages[toUsername]) {
+                personalMessages[toUsername] = [];
+            }
+            personalMessages[toUsername].push(message);
+            savePersonalMessages();
+            
+            // Also add to receiver's messages (for other user)
+            const receiverMessages = JSON.parse(localStorage.getItem(`zeoo_messages_${toUsername}`) || '{}');
+            if(!receiverMessages[currentUser.username]) {
+                receiverMessages[currentUser.username] = [];
+            }
+            receiverMessages[currentUser.username].push({
+                ...message,
+                from: currentUser.username,
+                to: toUsername
+            });
+            localStorage.setItem(`zeoo_messages_${toUsername}`, JSON.stringify(receiverMessages));
+            
+            return message;
+        }
+        
+        // Mark messages as read
+        function markMessagesAsRead(otherUsername) {
+            if(personalMessages[otherUsername]) {
+                personalMessages[otherUsername].forEach(msg => {
+                    if(msg.to === currentUser.username && !msg.read) {
+                        msg.read = true;
+                    }
+                });
+                savePersonalMessages();
+            }
+        }
+        
+        // Get unread count for a conversation
+        function getUnreadCount(otherUsername) {
+            if(!personalMessages[otherUsername]) return 0;
+            return personalMessages[otherUsername].filter(msg => 
+                msg.to === currentUser.username && !msg.read
+            ).length;
+        }
+        
+        // Get total unread messages count
+        function getTotalUnreadCount() {
+            let total = 0;
+            for(let user in personalMessages) {
+                total += personalMessages[user].filter(msg => 
+                    msg.to === currentUser.username && !msg.read
+                ).length;
+            }
+            return total;
+        }
+        
+        // Clear all messages for current user
+        function clearAllMessages() {
+            if(confirm('⚠️ Delete ALL your messages? This cannot be undone!')) {
+                personalMessages = {};
+                savePersonalMessages();
+                renderMessagesList();
+                showToast('All messages cleared!');
+            }
+        }
+        
+        // Export messages
+        function exportMessages() {
+            const data = {
+                user: currentUser.username,
+                messages: personalMessages,
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `zeoo_messages_${currentUser.username}_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Messages exported!');
+        }
+        
+        // ============ OTP FUNCTIONS ============
+        
+        function generateOTP() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+        
+        function sendOTP() {
+            const email = document.getElementById('loginEmail').value.trim();
+            if(!email) {
+                showToast('Please enter email address', true);
+                return;
+            }
+            
+            if(!email.includes('@') || !email.includes('.')) {
+                showToast('Please enter a valid email address', true);
+                return;
+            }
+            
+            pendingEmail = email;
+            const otp = generateOTP();
+            pendingOTP = otp;
+            
+            localStorage.setItem(`zeoo_otp_${email}`, otp);
+            localStorage.setItem(`zeoo_otp_time_${email}`, Date.now().toString());
+            
+            console.log(`OTP for ${email}: ${otp}`);
+            alert(`📧 OTP sent to ${email}\n\nYour OTP is: ${otp}\n\n(For demo purposes, OTP is shown here. In production, this would be emailed.)`);
+            
+            document.getElementById('otpSection').style.display = 'block';
+            showToast(`OTP sent to ${email}`);
+        }
+        
+        function verifyOTP() {
+            const enteredOTP = document.getElementById('otpCode').value.trim();
+            const email = pendingEmail;
+            
+            if(!enteredOTP) {
+                showToast('Please enter OTP', true);
+                return;
+            }
+            
+            const storedOTP = localStorage.getItem(`zeoo_otp_${email}`);
+            const storedTime = localStorage.getItem(`zeoo_otp_time_${email}`);
+            
+            if(storedOTP && storedTime) {
+                const timeDiff = Date.now() - parseInt(storedTime);
+                if(timeDiff > 5 * 60 * 1000) {
+                    showToast('OTP expired! Please request a new one.', true);
+                    return;
+                }
+                
+                if(enteredOTP === storedOTP) {
+                    loginWithEmail(email);
+                } else {
+                    showToast('Invalid OTP! Please try again.', true);
+                }
+            } else {
+                showToast('Please request OTP first', true);
+            }
+        }
+        
+        function loginWithEmail(email) {
+            let user = Object.values(usersDB).find(u => u.email === email);
+            
+            if(user) {
+                currentUser = user;
+                localStorage.setItem('zeoo_user', JSON.stringify(currentUser));
+                initPersonalMessages();
+                showMainApp();
+                showToast(`Welcome back, ${currentUser.name}! ✨`);
+            } else {
+                const name = prompt('Welcome! Please enter your full name:');
+                if(!name) {
+                    showToast('Name is required to create account', true);
+                    return;
+                }
+                
+                const username = email.split('@')[0];
+                let finalUsername = username;
+                let counter = 1;
+                while(usersDB[finalUsername]) {
+                    finalUsername = username + counter;
+                    counter++;
+                }
+                
+                usersDB[finalUsername] = {
+                    id: finalUsername,
+                    username: finalUsername,
+                    name: name,
+                    avatar: finalUsername[0].toUpperCase(),
+                    bio: 'New to Zeoo! 🌟 Share your first moment',
+                    followers: [],
+                    following: [],
+                    followersCount: 0,
+                    followingCount: 0,
+                    email: email,
+                    password: null,
+                    posts: [],
+                    createdAt: Date.now(),
+                    isNew: true
+                };
+                
+                currentUser = usersDB[finalUsername];
+                currentUser.following = [];
+                currentUser.followers = [];
+                currentUser.followingCount = 0;
+                currentUser.followersCount = 0;
+                saveData();
+                initPersonalMessages();
+                showMainApp();
+                showToast(`Welcome to Zeoo, ${name}! ✨`);
+            }
+            
+            localStorage.removeItem(`zeoo_otp_${email}`);
+            localStorage.removeItem(`zeoo_otp_time_${email}`);
+            document.getElementById('otpCode').value = '';
+            document.getElementById('otpSection').style.display = 'none';
+        }
+        
+        function createNewAccount() {
+            const email = prompt('Enter your email address:');
+            if(!email) return;
+            
+            if(!email.includes('@') || !email.includes('.')) {
+                showToast('Please enter a valid email address', true);
+                return;
+            }
+            
+            pendingEmail = email;
+            const otp = generateOTP();
+            pendingOTP = otp;
+            
+            localStorage.setItem(`zeoo_otp_${email}`, otp);
+            localStorage.setItem(`zeoo_otp_time_${email}`, Date.now().toString());
+            
+            alert(`📧 OTP sent to ${email}\n\nYour OTP is: ${otp}\n\n(For demo purposes, OTP is shown here.)`);
+            
+            const enteredOTP = prompt('Enter the OTP sent to your email:');
+            if(enteredOTP === otp) {
+                const name = prompt('Your full name:');
+                if(!name) return;
+                
+                const username = email.split('@')[0];
+                let finalUsername = username;
+                let counter = 1;
+                while(usersDB[finalUsername]) {
+                    finalUsername = username + counter;
+                    counter++;
+                }
+                
+                usersDB[finalUsername] = {
+                    id: finalUsername,
+                    username: finalUsername,
+                    name: name,
+                    avatar: finalUsername[0].toUpperCase(),
+                    bio: 'New to Zeoo! 🌟 Share your first moment',
+                    followers: [],
+                    following: [],
+                    followersCount: 0,
+                    followingCount: 0,
+                    email: email,
+                    password: null,
+                    posts: [],
+                    createdAt: Date.now(),
+                    isNew: true
+                };
+                
+                currentUser = usersDB[finalUsername];
+                currentUser.following = [];
+                currentUser.followers = [];
+                currentUser.followingCount = 0;
+                currentUser.followersCount = 0;
+                saveData();
+                initPersonalMessages();
+                showMainApp();
+                showToast(`Welcome to Zeoo, ${name}! ✨`);
+                
+                localStorage.removeItem(`zeoo_otp_${email}`);
+                localStorage.removeItem(`zeoo_otp_time_${email}`);
+            } else {
+                showToast('Invalid OTP!', true);
+            }
+        }
+        
+        // ============ MAIN APP FUNCTIONS ============
+        
+        function loadSettings() {
+            const saved = localStorage.getItem('zeoo_settings');
+            if(saved) { userSettings = JSON.parse(saved); }
+            applyDarkMode(userSettings.darkMode);
+        }
+        
+        function saveSettings() { localStorage.setItem('zeoo_settings', JSON.stringify(userSettings)); }
+        
+        function applyDarkMode(isDark) {
+            if(isDark) {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            }
+            const toggle = document.getElementById('darkModeToggle');
+            if(toggle) toggle.checked = isDark;
+        }
+        
+        function toggleDarkMode() {
+            userSettings.darkMode = document.getElementById('darkModeToggle').checked;
+            saveSettings();
+            applyDarkMode(userSettings.darkMode);
+            showToast(userSettings.darkMode ? '🌙 Dark mode enabled' : '☀️ Light mode enabled');
+        }
+        
+        // Follow/Unfollow functions
+        function followUser(username) {
+            if(!currentUser.following) currentUser.following = [];
+            if(!currentUser.following.includes(username)) {
+                currentUser.following.push(username);
+                if(usersDB[username]) {
+                    if(!usersDB[username].followers) usersDB[username].followers = [];
+                    if(!usersDB[username].followers.includes(currentUser.username)) {
+                        usersDB[username].followers.push(currentUser.username);
+                        usersDB[username].followersCount = (usersDB[username].followersCount || 0) + 1;
+                    }
+                }
+                currentUser.followingCount = (currentUser.followingCount || 0) + 1;
+                saveData();
+                updateUI();
+                showToast(`✨ You are now following ${username}`);
+            }
+        }
+        
+        function unfollowUser(username) {
+            if(currentUser.following && currentUser.following.includes(username)) {
+                currentUser.following = currentUser.following.filter(u => u !== username);
+                if(usersDB[username]) {
+                    usersDB[username].followers = usersDB[username].followers.filter(f => f !== currentUser.username);
+                    usersDB[username].followersCount = Math.max(0, (usersDB[username].followersCount || 0) - 1);
+                }
+                currentUser.followingCount = Math.max(0, (currentUser.followingCount || 0) - 1);
+                saveData();
+                updateUI();
+                showToast(`👋 You unfollowed ${username}`);
+            }
+        }
+        
+        function isFollowing(username) {
+            return currentUser.following && currentUser.following.includes(username);
+        }
+        
+        function viewOtherProfile(username) {
+            const user = usersDB[username];
+            if(user && user.username !== currentUser.username) {
+                const profileHtml = `
+                    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: ${userSettings.darkMode ? '#1e1e1e' : 'white'}; z-index: 400; overflow-y: auto;" id="otherProfileModal">
+                        <div style="position: sticky; top: 0; background: ${userSettings.darkMode ? '#1e1e1e' : 'white'}; padding: 16px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px; cursor: pointer;" onclick="closeOtherProfile()">←</span>
+                            <div class="profile-avatar-large" style="width: 50px; height: 50px; font-size: 24px;">${user.avatar}</div>
+                            <div><strong>${user.username}</strong><br><small>${user.name}</small></div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+                                <div><strong>${user.posts.length}</strong><br><small>posts</small></div>
+                                <div><strong>${user.followersCount || 0}</strong><br><small>followers</small></div>
+                                <div><strong>${user.followingCount || 0}</strong><br><small>following</small></div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <div><strong>${user.name}</strong></div>
+                                <div>${user.bio}</div>
+                                <div style="font-size: 12px; color: #8e8e8e; margin-top: 5px;">📧 ${user.email}</div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="profile-btn ${isFollowing(username) ? 'unfollow-btn' : 'follow-btn'}" onclick="handleFollowFromProfile('${username}')">
+                                    ${isFollowing(username) ? 'Unfollow' : 'Follow'}
+                                </button>
+                                <button class="profile-btn" onclick="openChat('${username}'); closeOtherProfile();">Message</button>
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <div class="settings-title">Posts</div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;">
+                                    ${user.posts.map(post => `<img src="${post.image}" style="aspect-ratio:1; object-fit:cover; width:100%;">`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', profileHtml);
+            } else {
+                switchTab('profile');
+            }
+        }
+        
+        function closeOtherProfile() {
+            const modal = document.getElementById('otherProfileModal');
+            if(modal) modal.remove();
+        }
+        
+        function handleFollowFromProfile(username) {
+            if(isFollowing(username)) {
+                unfollowUser(username);
+            } else {
+                followUser(username);
+            }
+            closeOtherProfile();
+            viewOtherProfile(username);
+        }
+        
+        // ============ MESSAGE UI FUNCTIONS ============
+        
+        function renderMessagesList() {
+            const container = document.getElementById('messagesList');
+            if(!container) return;
+            
+            const conversations = [];
+            for(let otherUser in personalMessages) {
+                const messages = personalMessages[otherUser];
+                if(messages && messages.length > 0) {
+                    const lastMsg = messages[messages.length - 1];
+                    const unreadCount = getUnreadCount(otherUser);
+                    conversations.push({
+                        username: otherUser,
+                        lastMsg: lastMsg,
+                        unreadCount: unreadCount
+                    });
+                }
+            }
+            
+            conversations.sort((a, b) => b.lastMsg.timestamp - a.lastMsg.timestamp);
+            
+            if(conversations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💬</div>
+                        <div>No messages yet</div>
+                        <div>Search for users and start a conversation!</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = conversations.map(conv => {
+                const user = usersDB[conv.username];
+                const lastMsgText = conv.lastMsg.text.length > 40 ? conv.lastMsg.text.substring(0, 40) + '...' : conv.lastMsg.text;
+                const timeAgo = formatTime(conv.lastMsg.timestamp);
+                
+                return `
+                    <div class="message-item" onclick="openChat('${conv.username}')">
+                        <div class="message-avatar">
+                            ${user?.avatar || conv.username[0]}
+                            ${conv.unreadCount > 0 ? `<span class="unread-badge">${conv.unreadCount}</span>` : ''}
+                        </div>
+                        <div class="message-info">
+                            <div class="message-sender">${conv.username}</div>
+                            <div class="message-text">${escapeHtml(lastMsgText)}</div>
+                        </div>
+                        <div class="message-time">${timeAgo}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function openChat(username) {
+            currentChatUser = username;
+            const user = usersDB[username];
+            if(user) {
+                document.getElementById('chatAvatar').textContent = user.avatar;
+                document.getElementById('chatUsername').textContent = user.username;
+                document.getElementById('chatStatus').textContent = 'online';
+                markMessagesAsRead(username);
+                renderChatMessages();
+                document.getElementById('chatModal').classList.add('active');
+                renderMessagesList();
+            }
+        }
+        
+        function closeChat() {
+            document.getElementById('chatModal').classList.remove('active');
+            currentChatUser = null;
+            renderMessagesList();
+        }
+        
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessages');
+            if(!container || !currentChatUser) return;
+            
+            const messages = getMessagesWithUser(currentChatUser);
+            
+            if(messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💬</div>
+                        <div>No messages yet</div>
+                        <div>Send a message to start the conversation!</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = messages.map(msg => {
+                const isSent = msg.from === currentUser.username;
+                const timeAgo = formatTime(msg.timestamp);
+                
+                return `
+                    <div class="chat-message ${isSent ? 'sent' : 'received'}">
+                        <div class="message-bubble">
+                            ${escapeHtml(msg.text)}
+                            <div class="message-time-small">${timeAgo}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text || !currentChatUser) return;
+            
+            addMessage(currentChatUser, text, true);
+            input.value = '';
+            renderChatMessages();
+            
+            // Update messages list
+            renderMessagesList();
+        }
+        
+        // ============ DATA FUNCTIONS ============
+        
+        function saveData() {
+            localStorage.setItem('zeoo_users_db', JSON.stringify(usersDB));
+            localStorage.setItem('zeoo_posts_db', JSON.stringify(allPosts));
+        }
+        
+        function loadData() {
+            const savedUsers = localStorage.getItem('zeoo_users_db');
+            const savedPosts = localStorage.getItem('zeoo_posts_db');
+            if(savedUsers) { usersDB = JSON.parse(savedUsers); }
+            else { usersDB = {}; }
+            if(savedPosts) { allPosts = JSON.parse(savedPosts); }
+            else { allPosts = []; }
+        }
+        
+        function showMainApp() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainApp').classList.add('active');
+            updateUI();
+            renderAll();
+            loadSettings();
+            document.getElementById('settingsUsername').textContent = currentUser.username;
+            document.getElementById('settingsEmail').textContent = currentUser.email;
+            updateAnalytics();
+            renderMessagesList();
+            
+            // Update header with unread count
+            const unreadTotal = getTotalUnreadCount();
+            if(unreadTotal > 0) {
+                showToast(`📬 You have ${unreadTotal} unread message${unreadTotal > 1 ? 's' : ''}`);
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('zeoo_user');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainApp').classList.remove('active');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('otpCode').value = '';
+            document.getElementById('otpSection').style.display = 'none';
+            showToast('Logged out! 👋');
+        }
+        
+        function updateUI() {
+            if(currentUser) {
+                document.getElementById('profileAvatar').textContent = currentUser.avatar;
+                document.getElementById('profileName').textContent = currentUser.name;
+                document.getElementById('profileBio').textContent = currentUser.bio;
+                document.getElementById('profilePosts').textContent = currentUser.posts.length;
+                document.getElementById('profileFollowers').textContent = currentUser.followersCount || 0;
+                document.getElementById('profileFollowing').textContent = currentUser.followingCount || 0;
+            }
+        }
+        
+        function updateOnlineUsers() {
+            const allUsers = Object.values(usersDB).filter(u => u.username !== currentUser?.username);
+            const container = document.getElementById('onlineUsersList');
+            if(allUsers.length === 0) { container.innerHTML = '<div style="padding: 10px; color: #8e8e8e;">No users online</div>'; return; }
+            container.innerHTML = allUsers.map(user => `
+                <div class="online-user" onclick="viewOtherProfile('${user.username}')">
+                    <div class="online-avatar">${user.avatar}<div class="online-badge"></div></div>
+                    <div class="online-name">${user.username}${user.isNew ? '<span class="new-badge">NEW</span>' : ''}</div>
+                </div>
+            `).join('');
+        }
+        
+        function searchUsers() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsDiv = document.getElementById('searchResults');
+            if(!query) { resultsDiv.classList.remove('active'); return; }
+            const results = Object.values(usersDB).filter(user => user.username !== currentUser?.username && (user.username.toLowerCase().includes(query) || user.name.toLowerCase().includes(query)));
+            if(results.length === 0) { resultsDiv.innerHTML = '<div style="padding: 20px; text-align: center;">No users found</div>'; resultsDiv.classList.add('active'); return; }
+            resultsDiv.innerHTML = results.map(user => `
+                <div class="search-result-item" onclick="viewOtherProfile('${user.username}')">
+                    <div class="post-avatar" style="width: 40px; height: 40px;">${user.avatar}</div>
+                    <div><strong>${user.username}</strong><br><small>${user.name}</small>${user.isNew ? '<span class="new-badge">NEW</span>' : ''}</div>
+                </div>
+            `).join('');
+            resultsDiv.classList.add('active');
+        }
+        
+        function formatTime(timestamp) {
+            const diff = Date.now() - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            if(minutes < 1) return 'Just now';
+            if(minutes < 60) return `${minutes}m ago`;
+            if(minutes < 1440) return `${Math.floor(minutes/60)}h ago`;
+            return `${Math.floor(minutes/1440)}d ago`;
+        }
+        
+        function renderFeed() {
+            const container = document.getElementById('postsContainer');
+            const sortedPosts = [...allPosts].sort((a,b) => b.timestamp - a.timestamp);
+            if(sortedPosts.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-icon">📸</div><div>No posts yet</div><div>Be the first to share!</div></div>'; return; }
+            container.innerHTML = sortedPosts.map(post => `
+                <div class="post">
+                    <div class="post-header"><div class="post-avatar" onclick="viewOtherProfile('${post.username}')">${post.userAvatar}</div><div class="post-user"><div class="post-username" onclick="viewOtherProfile('${post.username}')">${post.username}</div><div class="post-location">${post.location}</div></div><div class="post-menu">•••</div></div>
+                    <img class="post-image" src="${post.image}">
+                    <div class="post-actions"><button class="action-icon ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">${post.liked ? '❤️' : '🤍'}</button><button class="action-icon" onclick="openComments(${post.id})">💬</button></div>
+                    <div class="post-likes">${post.likes} likes</div>
+                    <div class="post-caption"><strong>${post.username}</strong> ${escapeHtml(post.caption)}</div>
+                    <div class="post-time">${formatTime(post.timestamp)}</div>
+                    <div class="comment-section"><input type="text" class="comment-input" id="comment-${post.id}" placeholder="Add a comment..."><button class="comment-post" onclick="addComment(${post.id})">Post</button></div>
+                </div>
+            `).join('');
+        }
+        
+        function renderExplore() {
+            const container = document.getElementById('exploreGrid');
+            if(allPosts.length === 0) { container.innerHTML = '<div class="empty-state" style="grid-column: span 3;"><div class="empty-icon">🔍</div><div>No posts to explore</div></div>'; return; }
+            container.innerHTML = allPosts.map(post => `<img class="explore-item" src="${post.image}" onclick="viewOtherProfile('${post.username}')">`).join('');
+        }
+        
+        function renderProfile() {
+            const container = document.getElementById('profilePostsGrid');
+            if(currentUser.posts.length === 0) { container.innerHTML = '<div class="empty-state" style="grid-column: span 3;"><div class="empty-icon">📷</div><div>No posts yet</div><div>Tap + to share</div></div>'; return; }
+            container.innerHTML = currentUser.posts.map(post => `<img class="profile-post" src="${post.image}">`).join('');
+        }
+        
+        function renderStories() {
+            document.getElementById('storiesContainer').innerHTML = `<div class="story" onclick="showToast('Create your story!')"><div class="story-ring"><div class="story-inner"><div class="story-avatar">+</div></div></div><div class="story-name">Your story</div></div>`;
+        }
+        
+        function toggleLike(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if(post) { post.liked = !post.liked; post.likes += post.liked ? 1 : -1; renderFeed(); updateAnalytics(); showToast(post.liked ? 'Liked!' : 'Unliked'); }
+        }
+        
+        function addComment(postId) {
+            const input = document.getElementById(`comment-${postId}`);
+            if(input.value.trim()) {
+                if(!allPosts.find(p => p.id === postId).comments) allPosts.find(p => p.id === postId).comments = [];
+                allPosts.find(p => p.id === postId).comments.push({ username: currentUser.username, text: input.value });
+                input.value = ""; renderFeed(); showToast('Comment added!');
+            }
+        }
+        
+        function createPost() {
+            const file = document.getElementById('postImage').files[0];
+            if(!file) { showToast('Select an image!', true); return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, userAvatar: currentUser.avatar, image: e.target.result, caption: document.getElementById('postCaption').value || 'My first post! ✨', location: document.getElementById('postLocation').value || 'Somewhere', likes: 0, liked: false, comments: [], timestamp: Date.now() };
+                allPosts.unshift(newPost);
+                currentUser.posts.unshift(newPost);
+                saveData();
+                renderAll();
+                updateAnalytics();
+                closeCreateModal();
+                showToast('Post shared! ✅');
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        
+        function renderAll() { renderFeed(); renderExplore(); renderProfile(); renderStories(); updateUI(); updateOnlineUsers(); renderMessagesList(); }
+        
+        function updateAnalytics() {
+            const userPosts = currentUser.posts;
+            const totalPosts = userPosts.length;
+            const totalLikes = userPosts.reduce((sum, p) => sum + p.likes, 0);
+            const avgLikes = totalPosts > 0 ? (totalLikes / totalPosts).toFixed(1) : 0;
+            const engagement = totalPosts > 0 ? ((totalLikes / totalPosts) / 5).toFixed(1) : 0;
+            
+            document.getElementById('analyticsTotalPosts').textContent = totalPosts;
+            document.getElementById('analyticsTotalLikes').textContent = totalLikes;
+            document.getElementById('analyticsAvgLikes').textContent = avgLikes;
+            document.getElementById('analyticsEngagement').textContent = engagement + '%';
+            
+            const chartContainer = document.getElementById('postPerformanceChart');
+            const sortedPosts = [...userPosts].sort((a,b) => b.likes - a.likes).slice(0, 5);
+            chartContainer.innerHTML = sortedPosts.map((post, i) => `
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Post ${i+1}</span>
+                        <span>❤️ ${post.likes} likes</span>
+                    </div>
+                    <div class="chart-bar" style="width: ${Math.min(100, (post.likes / (sortedPosts[0]?.likes || 1)) * 100)}%"></div>
+                </div>
+            `).join('');
+            if(sortedPosts.length === 0) chartContainer.innerHTML = '<div class="empty-state"><div>No posts yet</div></div>';
+            
+            const topPostsContainer = document.getElementById('topPostsList');
+            topPostsContainer.innerHTML = userPosts.slice(0, 5).map((post, i) => `
+                <div class="setting-item">
+                    <span>${i+1}. ${post.caption.substring(0, 30)}...</span>
+                    <span>❤️ ${post.likes}</span>
+                </div>
+            `).join('');
+            if(userPosts.length === 0) topPostsContainer.innerHTML = '<div class="empty-state">No posts yet</div>';
+        }
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('feedPage').style.display = tab === 'feed' ? 'block' : 'none';
+            document.getElementById('explorePage').classList.toggle('active', tab === 'explore');
+            document.getElementById('profilePage').classList.toggle('active', tab === 'profile');
+            document.getElementById('messagesPage').classList.toggle('active', tab === 'messages');
+            document.getElementById('analyticsPage').classList.toggle('active', tab === 'analytics');
+            document.getElementById('settingsPage').classList.toggle('active', tab === 'settings');
+            document.getElementById('searchResults').classList.remove('active');
+            document.getElementById('searchInput').value = '';
+            if(tab === 'analytics') updateAnalytics();
+            if(tab === 'messages') renderMessagesList();
+            document.querySelectorAll('.nav-item').forEach((item, idx) => { item.classList.remove('active'); if((tab === 'feed' && idx === 0) || (tab === 'explore' && idx === 1) || (tab === 'profile' && idx === 2) || (tab === 'messages' && idx === 3) || (tab === 'analytics' && idx === 4) || (tab === 'settings' && idx === 5)) item.classList.add('active'); });
+        }
+        
+        function showCreateModal() { document.getElementById('createModal').classList.add('active'); }
+        function closeCreateModal() { document.getElementById('createModal').classList.remove('active'); document.getElementById('postImage').value = ''; document.getElementById('postCaption').value = ''; document.getElementById('postLocation').value = ''; }
+        function editProfile() { const newBio = prompt('Edit your bio:', currentUser.bio); if(newBio) { currentUser.bio = newBio; updateUI(); saveData(); showToast('Profile updated!'); } }
+        function openComments(postId) { document.getElementById(`comment-${postId}`).focus(); }
+        function showToast(msg, err) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.style.background = err ? '#dc3545' : 'rgba(0,0,0,0.8)'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
+        
+        // Initialize
+        loadData();
+        setTimeout(() => { document.getElementById('introScreen').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; }, 3000);
+        const savedUser = localStorage.getItem('zeoo_user');
+        if(savedUser) { const user = JSON.parse(savedUser); if(usersDB[user.username]) { currentUser = usersDB[user.username]; initPersonalMessages(); showMainApp(); } }
+        window.onclick = function(event) { const modal = document.getElementById('createModal'); if(event.target === modal) closeCreateModal(); };
+    </script>
+</body>
+</html>
